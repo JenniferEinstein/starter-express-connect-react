@@ -1,6 +1,13 @@
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+const API = process.env.REACT_APP_API_URL;
+
 
 function BookmarkNewForm() {
+
+  const navigate = useNavigate();
+
   const [bookmark, setBookmark] = useState({
     name: "",
     url: "",
@@ -8,6 +15,16 @@ function BookmarkNewForm() {
     isFavorite: false,
     description: "",
   });
+
+  const addBookmark = (newBookmark) => {
+    axios
+    .post(`${API}/bookmarks`, newBookmark)
+    .then(
+    () => {
+    navigate(`/bookmarks`);
+    })
+    .catch((c) => console.error("catch", c));
+   };
 
   const handleTextChange = (event) => {
     setBookmark({ ...bookmark, [event.target.id]: event.target.value });
@@ -19,7 +36,12 @@ function BookmarkNewForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    addBookmark(bookmark);
   };
+
+
+
+
   return (
     <div className="New">
       <form onSubmit={handleSubmit}>

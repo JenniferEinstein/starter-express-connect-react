@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+
+const API = process.env.REACT_APP_API_URL
 
 function BookmarkEditForm() {
+  const navigate = useNavigate();
   let { index } = useParams();
 
   const [bookmark, setBookmark] = useState({
@@ -20,7 +24,14 @@ function BookmarkEditForm() {
     setBookmark({ ...bookmark, isFavorite: !bookmark.isFavorite });
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    axios
+      .get(`${API}/bookmarks/${index}`)
+      .then((response) => {
+        setBookmark(response.data);
+      })
+      .catch((e) => console.error(e));
+  }, [index]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
